@@ -1,0 +1,31 @@
+openapi: 3.0.0
+info:
+  title: IntegraHub API
+  version: 1.0.0
+paths:
+  /orders:
+    post:
+      summary: Create a new order
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                customer_id:
+                  type: string
+                total_amount:
+                  type: number
+                items:
+                  type: array
+      responses:
+        '201':
+          description: Order Created (Async)
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: integrahub-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    healthcheck:
+      test: [ "CMD", "rabbitmqctl", "status" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: integrahub-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: integrahub
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  orders:
+    build: ./orders
+    container_name: integrahub-orders
+    ports:
+      - "3001:3000"
+    environment:
+      - PORT=3000
+      - RABBITMQ_URL=amqp://user:password@rabbitmq:5672
+      - DATABASE_URL=postgres://admin:password@postgres:5432/integrahub
+    depends_on:
+      - rabbitmq
+      - postgres
+
+  inventory:
+    build: ./inventory
+    container_name: integrahub-inventory
+    environment:
+      - RABBITMQ_URL=amqp://user:password@rabbitmq:5672
+      - DATABASE_URL=postgres://admin:password@postgres:5432/integrahub
+    depends_on:
+      - rabbitmq
+      - postgres
+
+  payments:
+    build: ./payments
+    container_name: integrahub-payments
+    environment:
+      - RABBITMQ_URL=amqp://user:password@rabbitmq:5672
+    depends_on:
+      - rabbitmq
+
+  notifications:
+    build: ./notifications
+    container_name: integrahub-notifications
+    environment:
+      - RABBITMQ_URL=amqp://user:password@rabbitmq:5672
+    depends_on:
+      - rabbitmq
+
+  legacy:
+    build: ./legacy
+    container_name: integrahub-legacy
+    volumes:
+      - ./legacy_dropzone:/app/dropzone
+    environment:
+      - RABBITMQ_URL=amqp://user:password@rabbitmq:5672
+      - DROPZONE_PATH=/app/dropzone
+    depends_on:
+      - rabbitmq
+      - orders
+
+  gateway:
+    build:
+      context: .
+      dockerfile: ./gateway/Dockerfile
+    container_name: integrahub-gateway
+    ports:
+      - "3000:80"
+    depends_on:
+      - orders
+      - inventory
+      - payments
+      - notifications
+
+volumes:
+  postgres_data:
