@@ -10,17 +10,32 @@ const PORT = process.env.PORT || 3000;
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 const initDB = async () => {
-    const client = await pool.connect();
-    try {
-        await client.query(`
-            CREATE TABLE IF NOT EXISTS inventory_processed (
-                message_id VARCHAR(255) PRIMARY KEY,
-                processed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-        `);
-    } finally {
-        client.release();
+    let retries = 5;
+    while (retries > 0) {
+        try {
+            const client = await pool.connect();
+            try {
+                await client.query(`
+                    CREATE TABLE IF NOT EXISTS inventory_processed (
+                        message_id VARCHAR(255) PRIMARY KEY,
+                        processed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    );
+                `);
+                client.release();
+                console.log('Inventory DB initialized');
+                return;
+            } catch (e) {
+                client.release();
+                throw e;
+            }
+        } catch (e) {
+            console.error(`Error initializing Inventory DB, retries left ${retries}`, e.message);
+            retries--;
+            await new Promise(res => setTimeout(res, 5000));
+        }
     }
+    console.error('Could not initialize Inventory DB');
+    process.exit(1);
 };
 
 // RabbitMQ Setup

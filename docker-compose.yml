@@ -4,6 +4,7 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     container_name: integrahub-rabbitmq
+    restart: always
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -19,6 +20,7 @@ services:
   postgres:
     image: postgres:15-alpine
     container_name: integrahub-postgres
+    restart: always
     ports:
       - "5432:5432"
     environment:
@@ -31,6 +33,7 @@ services:
   orders:
     build: ./orders
     container_name: integrahub-orders
+    restart: always
     ports:
       - "3001:3000"
     environment:
@@ -44,6 +47,7 @@ services:
   inventory:
     build: ./inventory
     container_name: integrahub-inventory
+    restart: always
     environment:
       - RABBITMQ_URL=amqp://user:password@rabbitmq:5672
       - DATABASE_URL=postgres://admin:password@postgres:5432/integrahub
@@ -54,6 +58,7 @@ services:
   payments:
     build: ./payments
     container_name: integrahub-payments
+    restart: always
     environment:
       - RABBITMQ_URL=amqp://user:password@rabbitmq:5672
     depends_on:
@@ -62,6 +67,7 @@ services:
   notifications:
     build: ./notifications
     container_name: integrahub-notifications
+    restart: always
     environment:
       - RABBITMQ_URL=amqp://user:password@rabbitmq:5672
     depends_on:
@@ -84,6 +90,7 @@ services:
       context: .
       dockerfile: ./gateway/Dockerfile
     container_name: integrahub-gateway
+    restart: always
     ports:
       - "3000:80"
     depends_on:

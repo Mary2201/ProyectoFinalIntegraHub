@@ -8,12 +8,13 @@
   "dependencies": {
     "amqplib": "^0.10.3",
     "axios": "^1.13.2",
-    "chokidar": "^5.0.0",
+    "chokidar": "^3.5.3",
     "cors": "^2.8.5",
     "csv-parser": "^3.2.0",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "fs-extra": "^11.3.3",
-    "pg": "^8.11.3"
+    "pg": "^8.11.3",
+    "uuid": "^8.3.2"
   }
 }

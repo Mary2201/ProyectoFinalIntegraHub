@@ -50,7 +50,7 @@ app.post('/orders', checkAuth, async (req, res) => {
             data: {
                 order_id: order.id,
                 customer_id: order.customer_id,
-                items: JSON.parse(order.items), // Ensure it's an object
+                items: order.items, // Already parsed by pg
                 total_amount: order.total_amount
             }
         };
