@@ -11,6 +11,9 @@ Enterprise Integration Platform for Order-to-Cash flows using Microservices, Eve
 - **Frontend**: React + Tailwind (via Vite).
 - **Infrastructure**: RabbitMQ, PostgreSQL.
 
+## Informe y Documentación
+📄 **[Ver Informe Final (Rubrica)](docs/INFORME_FINAL.md)**: Detalle de análisis del problema, justificación de arquitectura, metodología y pruebas.
+
 ## Prerequisites
 - Docker & Docker Compose
 - Node.js (optional, for local dev)
