@@ -13,6 +13,7 @@ Enterprise Integration Platform for Order-to-Cash flows using Microservices, Eve
 
 ## Informe y Documentación
 📄 **[Ver Informe Final (Rubrica)](docs/INFORME_FINAL.md)**: Detalle de análisis del problema, justificación de arquitectura, metodología y pruebas.
+📊 **[Ver Diagramas C4 y Secuencia](docs/DIAGRAMAS.md)**: Evidencias visuales de la arquitectura y flujos.
 
 ## Prerequisites
 - Docker & Docker Compose
